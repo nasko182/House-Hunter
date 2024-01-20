@@ -3,7 +3,7 @@ namespace HouseRentingSystem.Web;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-using Data;
+using HouseRentingSystem.Data;
 
 public class Program
 {

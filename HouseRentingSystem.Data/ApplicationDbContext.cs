@@ -1,4 +1,5 @@
-﻿namespace HouseRentingSystem.Web.Data;
+﻿namespace HouseRentingSystem.Data;
+
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
