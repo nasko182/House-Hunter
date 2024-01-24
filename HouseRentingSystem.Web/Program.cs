@@ -21,13 +21,19 @@ public class Program
         builder.Services
             .AddDefaultIdentity<ApplicationUser>(options =>
             {
-                options.SignIn.RequireConfirmedAccount = false;
+                options.SignIn.RequireConfirmedAccount = builder
+                    .Configuration.GetValue<bool>("Identity:SignIn:RequireConfirmedAccount");
 
-                options.Password.RequireLowercase = false;
-                options.Password.RequireUppercase = false;
-                options.Password.RequireNonAlphanumeric = false;
-
-
+                options.Password.RequireLowercase = builder
+                    .Configuration.GetValue<bool>("Identity:Password:RequireLowercase"); 
+                options.Password.RequireUppercase = builder
+                    .Configuration.GetValue<bool>("Identity:Password:RequireUppercase"); ;
+                options.Password.RequireNonAlphanumeric = builder
+                    .Configuration.GetValue<bool>("Identity:Password:RequireNonAlphanumeric"); ;
+                options.Password.RequireDigit = builder
+                    .Configuration.GetValue<bool>("Identity:Password:RequireDigit"); ;
+                options.Password.RequiredLength = builder
+                    .Configuration.GetValue<int>("Identity:Password:RequiredLength"); ;
             })
                 .AddEntityFrameworkStores<HouseRentingDbContext>();
 
