@@ -10,6 +10,10 @@ public class HouseEntityConfiguration : IEntityTypeConfiguration<House>
     public void Configure(EntityTypeBuilder<House> builder)
     {
         builder
+            .Property(h => h.CreatedOn)
+            .HasDefaultValue(DateTime.UtcNow);
+
+        builder
             .HasOne(h => h.Category)
             .WithMany(c => c.Houses)
             .HasForeignKey(h => h.CategoryId)
@@ -33,21 +37,9 @@ public class HouseEntityConfiguration : IEntityTypeConfiguration<House>
             Title = "Big House Marina",
             Address = "North London, UK (near the border)",
             Description = "A big house for your whole family. Don't miss to rent a house with three bedrooms.",
-            ImageUrl = "https://www.luxury-architecture.net/wpcontent/uploads/2017/12/1513217889-7597-FAIRWAYS-010.jpg",
+            ImageUrl = "https://static4.superimoti.bg/property-images/big/84166_1.jpg",
             PricePerMonth = 2100.00M,
             CategoryId = 3,
-            AgentId = Guid.Parse("ACE3AB43-264E-4B2D-B56D-274170BACFC5"),
-            RenterId = Guid.Parse("6ACC5766-87F9-4F30-C03E-08DC1FF94547")
-        };
-        houses.Add(house);
-        house = new House
-        {
-            Title = "Family House Comfort",
-            Address = "Near the Sea Garden in Burgas, Bulgaria",
-            Description = "It has the best comfort you will ever ask for. With two bedrooms, it is great for your family.",
-            ImageUrl = "https://cf.bstatic.com/xdata/images/hotel/max1024x768/179489660.jpg?k=2029f6d9589b49c95dcc9503a265e292c2cdfcb5277487a0050397c3f8dd545a&o=&hp=1", 
-            PricePerMonth = 1200.00M,
-            CategoryId = 2,
             AgentId = Guid.Parse("ACE3AB43-264E-4B2D-B56D-274170BACFC5"),
             RenterId = Guid.Parse("6ACC5766-87F9-4F30-C03E-08DC1FF94547")
         };

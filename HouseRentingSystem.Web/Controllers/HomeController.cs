@@ -3,18 +3,23 @@
 using System.Diagnostics;
 
 using Microsoft.AspNetCore.Mvc;
-
+using Services.Data.Interfaces;
 using ViewModels.Home;
 
 public class HomeController : Controller
 {
-    public HomeController()
+    private readonly IHouseService _houseService;
+
+    public HomeController(IHouseService houseService)
     {
+        _houseService = houseService;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        return View();
+        IEnumerable<IndexViewModel> viewModel = await this._houseService.LastThreeHosesAsync();
+
+        return View(viewModel);
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

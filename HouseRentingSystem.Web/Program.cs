@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 using Data;
 using Data.Models;
+using Services.Data.Interfaces;
+using Infrastructure.Extensions;
 
 public class Program
 {
@@ -36,6 +38,8 @@ public class Program
                     .Configuration.GetValue<int>("Identity:Password:RequiredLength"); ;
             })
                 .AddEntityFrameworkStores<HouseRentingDbContext>();
+
+        builder.Services.AddApplicationServices(typeof(IHouseService));
 
         builder.Services.AddControllersWithViews();
 

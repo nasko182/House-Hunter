@@ -1,10 +1,8 @@
 ﻿namespace HouseRentingSystem.Services.Data.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-internal interface IHouseService
+using Web.ViewModels.Home;
+
+public interface IHouseService
 {
+    Task<IEnumerable<IndexViewModel>> LastThreeHosesAsync();
 }
