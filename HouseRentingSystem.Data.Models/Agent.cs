@@ -8,8 +8,10 @@ public class Agent
 {
     public Agent()
     {
+        //this.Id = Guid.NewGuid();
         this.OwnedHouses = new HashSet<House>();
     }
+
     [Key]
     public Guid Id { get; set; }
 

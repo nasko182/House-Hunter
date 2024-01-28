@@ -4,6 +4,7 @@ using HouseRentingSystem.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HouseRentingSystem.Data.Migrations
 {
     [DbContext(typeof(HouseRentingDbContext))]
-    partial class HouseRentingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240128130448_InicializeUsersAndAgent")]
+    partial class InicializeUsersAndAgent
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -161,23 +163,6 @@ namespace HouseRentingSystem.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Cottage"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Single-Family"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Duplex"
-                        });
                 });
 
             modelBuilder.Entity("HouseRentingSystem.Data.Models.House", b =>
@@ -227,54 +212,6 @@ namespace HouseRentingSystem.Data.Migrations
                     b.HasIndex("RenterId");
 
                     b.ToTable("Houses");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("ce7992c6-b032-4f1d-8588-8ca69e227683"),
-                            Address = "North London, UK (near the border)",
-                            AgentId = new Guid("ace3ab43-264e-4b2d-b56d-274170bacfc5"),
-                            CategoryId = 3,
-                            Description = "A big house for your whole family. Don't miss to rent a house with three bedrooms.",
-                            ImageUrl = "https://www.luxury-architecture.net/wpcontent/uploads/2017/12/1513217889-7597-FAIRWAYS-010.jpg",
-                            PricePerMonth = 2100.00m,
-                            RenterId = new Guid("6acc5766-87f9-4f30-c03e-08dc1ff94547"),
-                            Title = "Big House Marina"
-                        },
-                        new
-                        {
-                            Id = new Guid("4f648f93-eb4c-4ee2-8969-aa5be0ef5c69"),
-                            Address = "Near the Sea Garden in Burgas, Bulgaria",
-                            AgentId = new Guid("ace3ab43-264e-4b2d-b56d-274170bacfc5"),
-                            CategoryId = 2,
-                            Description = "It has the best comfort you will ever ask for. With two bedrooms, it is great for your family.",
-                            ImageUrl = "https://cf.bstatic.com/xdata/images/hotel/max1024x768/179489660.jpg?k=2029f6d9589b49c95dcc9503a265e292c2cdfcb5277487a0050397c3f8dd545a&o=&hp=1",
-                            PricePerMonth = 1200.00m,
-                            RenterId = new Guid("6acc5766-87f9-4f30-c03e-08dc1ff94547"),
-                            Title = "Family House Comfort"
-                        },
-                        new
-                        {
-                            Id = new Guid("f8710f38-dafb-4adb-8d90-232bffbd4942"),
-                            Address = "Near the Sea Garden in Burgas, Bulgaria",
-                            AgentId = new Guid("ace3ab43-264e-4b2d-b56d-274170bacfc5"),
-                            CategoryId = 2,
-                            Description = "It has the best comfort you will ever ask for. With two bedrooms, it is great for your family.",
-                            ImageUrl = "https://cf.bstatic.com/xdata/images/hotel/max1024x768/179489660.jpg?k=2029f6d9589b49c95dcc9503a265e292c2cdfcb5277487a0050397c3f8dd545a&o=&hp=1",
-                            PricePerMonth = 1200.00m,
-                            Title = "Family House Comfort"
-                        },
-                        new
-                        {
-                            Id = new Guid("2626b91e-db9d-4820-a956-230de2eda556"),
-                            Address = "Boyana Neighbourhood, Sofia, Bulgaria",
-                            AgentId = new Guid("ace3ab43-264e-4b2d-b56d-274170bacfc5"),
-                            CategoryId = 2,
-                            Description = "This luxurious house is everything you will need. It is just excellent.",
-                            ImageUrl = "https://i.pinimg.com/originals/a6/f5/85/a6f5850a77633c56e4e4ac4f867e3c00.jpg",
-                            PricePerMonth = 2000.00m,
-                            Title = "Grand House"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
