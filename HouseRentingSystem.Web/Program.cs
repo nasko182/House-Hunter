@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 using Data;
 using Data.Models;
-using Services.Data.Interfaces;
+using Services.Data;
 using Infrastructure.Extensions;
 
 public class Program
@@ -39,7 +39,7 @@ public class Program
             })
                 .AddEntityFrameworkStores<HouseRentingDbContext>();
 
-        builder.Services.AddApplicationServices(typeof(IHouseService));
+        builder.Services.AddApplicationServices(typeof(HouseService));
 
         builder.Services.AddControllersWithViews();
 

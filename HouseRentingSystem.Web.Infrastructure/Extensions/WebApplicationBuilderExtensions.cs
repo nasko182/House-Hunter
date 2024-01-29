@@ -12,6 +12,7 @@ public static class WebApplicationBuilderExtensions
     /// </summary>
     /// <param name="serviceType">Type of random service implementation</param>
     /// <exception cref="InvalidOperationException"></exception>
+    
     public static void AddApplicationServices(this IServiceCollection services, Type serviceType)
     {
         Assembly? servicesAssembly = Assembly.GetAssembly(serviceType);
