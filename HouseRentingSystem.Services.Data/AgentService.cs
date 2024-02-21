@@ -27,7 +27,8 @@ public class AgentService : IAgentService
     {
         return await this._dbContext
             .Agents
-            .AnyAsync(a => a.PhoneNumber.ToString() == phoneNumber);
+            .AnyAsync(a => a.PhoneNumber == phoneNumber);
+
     }
 
     public async Task<bool> HasRentsByUserAsync(string userId)
