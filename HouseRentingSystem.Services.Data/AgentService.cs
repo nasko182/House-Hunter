@@ -43,8 +43,15 @@ public class AgentService : IAgentService
         return user.RentedHouses.Any();
     }
 
-    public Task CreateAsync(string userId, BecomeAgentFormModel model)
+    public async Task CreateAsync(string userId, BecomeAgentFormModel model)
     {
-        throw new NotImplementedException();
+        Agent agent = new Agent
+        {
+            PhoneNumber = model.PhoneNumber,
+            UserId = Guid.Parse(userId)
+        };
+
+        await this._dbContext.Agents.AddAsync(agent);
+        await this._dbContext.SaveChangesAsync();
     }
 }
