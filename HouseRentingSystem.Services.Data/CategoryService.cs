@@ -1,10 +1,26 @@
 ﻿namespace HouseRentingSystem.Services.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-internal class CategoryService
+using HouseRentingSystem.Data;
+using Interfaces;
+using Microsoft.EntityFrameworkCore;
+using Web.ViewModels.Category;
+
+public class CategoryService : ICategoryService
 {
+    private readonly HouseRentingDbContext _dbContext;
+    public CategoryService(HouseRentingDbContext dbContext)
+    {
+        this._dbContext = dbContext;
+    }
+    public async Task<IEnumerable<HouseSelectCategoryFormModel>> AllCategoriesAsync()
+    {
+        return await this._dbContext.Categories
+            .AsNoTracking()
+            .Select(c => new HouseSelectCategoryFormModel
+            {
+                Id = c.Id,
+                Name = c.Name
+            })
+            .ToArrayAsync();
+    }
 }

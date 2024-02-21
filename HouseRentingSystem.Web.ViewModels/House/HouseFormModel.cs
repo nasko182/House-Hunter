@@ -22,7 +22,7 @@ public class HouseFormModel
     public string Address { get; set; } = null!;
 
     [Required]
-    [StringLength(DescriptionMaxLength,MinimumLength = AddressMinLength)]
+    [StringLength(DescriptionMaxLength,MinimumLength = DescriptionMinLength)]
     public string Description { get; set; } =null!;
 
     [Required]
@@ -30,7 +30,7 @@ public class HouseFormModel
     [Display(Name = "Image Link")]
     public string ImageUrl { get; set; } = null!;
 
-    [Range(typeof(decimal),PricePerMonthMaxValue,PricePerMonthMinValue)]
+    [Range(typeof(decimal),PricePerMonthMinValue,PricePerMonthMaxValue)]
     [Display(Name = "Monthly Price")]
     public decimal PricePerMonth { get; set; }
 
