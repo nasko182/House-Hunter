@@ -11,4 +11,10 @@ public class HouseController : BaseController
     {
         return View();
     }
+
+    [HttpGet]
+    public async Task<IActionResult> Add()
+    {
+
+    }
 }
