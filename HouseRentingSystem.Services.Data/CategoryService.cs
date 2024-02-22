@@ -23,4 +23,9 @@ public class CategoryService : ICategoryService
             })
             .ToArrayAsync();
     }
+
+    public Task<bool> ExistsByIdAsync(int categoryId)
+    {
+        return this._dbContext.Categories.AnyAsync(c => c.Id == categoryId);
+    }
 }

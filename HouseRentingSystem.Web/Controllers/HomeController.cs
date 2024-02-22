@@ -12,19 +12,19 @@ public class HomeController : Controller
 
     public HomeController(IHouseService houseService)
     {
-        _houseService = houseService;
+        this._houseService = houseService;
     }
 
     public async Task<IActionResult> Index()
     {
         IEnumerable<IndexViewModel> viewModel = await this._houseService.LastThreeHosesAsync();
 
-        return View(viewModel);
+        return this.View(viewModel);
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        return this.View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier });
     }
 }

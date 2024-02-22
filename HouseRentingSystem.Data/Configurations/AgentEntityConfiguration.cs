@@ -10,7 +10,7 @@ public class AgentEntityConfiguration : IEntityTypeConfiguration<Agent>
 {
     public void Configure(EntityTypeBuilder<Agent> builder)
     {
-        builder.HasData(GenerateAgents());
+        builder.HasData(this.GenerateAgents());
     }
 
     private Agent[] GenerateAgents()

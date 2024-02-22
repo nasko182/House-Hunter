@@ -5,4 +5,5 @@ using Web.ViewModels.Category;
 public interface ICategoryService
 {
     Task<IEnumerable<HouseSelectCategoryFormModel>> AllCategoriesAsync();
+    Task<bool> ExistsByIdAsync(int categoryId);
 }

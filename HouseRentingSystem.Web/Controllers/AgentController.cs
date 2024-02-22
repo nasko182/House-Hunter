@@ -2,9 +2,10 @@
 
 using Microsoft.AspNetCore.Mvc;
 
-using Services.Data.Interfaces;
 using Infrastructure.Extensions;
+using Services.Data.Interfaces;
 using ViewModels.Agent;
+
 using static Common.NotificationMessagesConstants;
 
 public class AgentController : BaseController
@@ -24,7 +25,7 @@ public class AgentController : BaseController
 
         if (isAgent)
         {
-            TempData[ErrorMessage] = "You are already an agent";
+            this.TempData[ErrorMessage] = "You are already an agent";
             return this.RedirectToAction("Index", "Home");
         }
 
@@ -35,7 +36,7 @@ public class AgentController : BaseController
     public async Task<IActionResult> Become(BecomeAgentFormModel model)
     {
         string? userId = this.User.GetId();
-        bool isAgent = await this._agentService.AgentExistByUserIdAsync(userId);
+        bool isAgent = await this._agentService.AgentExistByUserIdAsync(userId!);
         if (isAgent)
         {
             this.TempData[ErrorMessage] = "You are already an agent";
@@ -46,7 +47,7 @@ public class AgentController : BaseController
         bool isPhoneNumberTaken = await this._agentService.AgentExistByPhoneNumberAsync(model.PhoneNumber);
         if (isPhoneNumberTaken)
         {
-            this.ModelState.AddModelError(nameof(model.PhoneNumber),"Agent with provided phone number already exists");
+            this.ModelState.AddModelError(nameof(model.PhoneNumber), "Agent with provided phone number already exists");
         }
 
         if (!this.ModelState.IsValid)
@@ -54,7 +55,7 @@ public class AgentController : BaseController
             return this.View(model);
         }
 
-        bool hasRents = await this._agentService.HasRentsByUserAsync(userId);
+        bool hasRents = await this._agentService.HasRentsByUserAsync(userId!);
         if (hasRents)
         {
             this.TempData[ErrorMessage] = "You must not have any active rents in order to become an agent";
@@ -64,9 +65,9 @@ public class AgentController : BaseController
 
         try
         {
-            await this._agentService.CreateAsync(userId, model);
+            await this._agentService.CreateAsync(userId!, model);
         }
-        catch (Exception e)
+        catch
         {
             this.TempData[ErrorMessage] =
                 "Unexpected error occurred while registering you as new agent! Please try again later or contact administrator.";

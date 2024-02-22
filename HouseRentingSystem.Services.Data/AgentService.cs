@@ -55,4 +55,18 @@ public class AgentService : IAgentService
         await this._dbContext.Agents.AddAsync(agent);
         await this._dbContext.SaveChangesAsync();
     }
+
+    public async Task<string?> GetAgentIdByUserIdAsync(string userId)
+    {
+        Agent? agent = await this._dbContext
+            .Agents
+            .FirstOrDefaultAsync(a => a.UserId.ToString() == userId);
+
+        if (agent == null)
+        {
+            return null;
+        }
+
+        return agent.Id.ToString();
+    }
 }
