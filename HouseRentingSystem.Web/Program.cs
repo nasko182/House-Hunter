@@ -6,14 +6,15 @@ using Data;
 using Data.Models;
 using Services.Data;
 using Infrastructure.Extensions;
+using Infrastructure.ModelBinders;
 
 public class Program
 {
     public static void Main(string[] args)
     {
-        var builder = WebApplication.CreateBuilder(args);
+        WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-        var connectionString = builder.Configuration
+        string connectionString = builder.Configuration
             .GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
         builder.Services
@@ -27,7 +28,7 @@ public class Program
                     .Configuration.GetValue<bool>("Identity:SignIn:RequireConfirmedAccount");
 
                 options.Password.RequireLowercase = builder
-                    .Configuration.GetValue<bool>("Identity:Password:RequireLowercase"); 
+                    .Configuration.GetValue<bool>("Identity:Password:RequireLowercase");
                 options.Password.RequireUppercase = builder
                     .Configuration.GetValue<bool>("Identity:Password:RequireUppercase"); ;
                 options.Password.RequireNonAlphanumeric = builder
@@ -41,9 +42,14 @@ public class Program
 
         builder.Services.AddApplicationServices(typeof(HouseService));
 
-        builder.Services.AddControllersWithViews();
+        builder.Services
+            .AddControllersWithViews()
+            .AddMvcOptions(options =>
+            {
+                options.ModelBinderProviders.Insert(0, new DecimalModelBinderProvider());
+            });
 
-        var app = builder.Build();
+        WebApplication app = builder.Build();
 
         if (app.Environment.IsDevelopment())
         {

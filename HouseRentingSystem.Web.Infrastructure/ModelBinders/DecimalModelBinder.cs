@@ -1,6 +1,7 @@
 ﻿namespace HouseRentingSystem.Web.Infrastructure.ModelBinders;
 
 using System.Globalization;
+
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 internal class DecimalModelBinder : IModelBinder
