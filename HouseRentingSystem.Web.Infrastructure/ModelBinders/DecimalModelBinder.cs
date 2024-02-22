@@ -4,7 +4,7 @@ using System.Globalization;
 
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-internal class DecimalModelBinder : IModelBinder
+public class DecimalModelBinder : IModelBinder
 {
     public Task BindModelAsync(ModelBindingContext? bindingContext)
     {
