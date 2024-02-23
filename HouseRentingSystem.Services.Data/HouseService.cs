@@ -109,4 +109,39 @@ public class HouseService : IHouseService
         };
 
     }
+
+    public async Task<IEnumerable<HouseAllViewModel>> AllByAgentIdAsync(string agentId)
+    {
+        return await this._dbContext
+            .Houses
+            .Where(h => h.AgentId.ToString() == agentId)
+            .Select(h => new HouseAllViewModel
+            {
+                Id = h.Id.ToString(),
+                Title = h.Title,
+                Address = h.Address,
+                ImageUrl = h.ImageUrl,
+                PricePerMonth = h.PricePerMonth,
+                IsRented = h.RenterId.HasValue
+            })
+            .ToArrayAsync();
+    }
+
+    public async Task<IEnumerable<HouseAllViewModel>> AllByUserIdAsync(string userId)
+    {
+        return await this._dbContext
+            .Houses
+            .Where(h => h.RenterId.HasValue &&
+                        h.RenterId.ToString() == userId)
+            .Select(h => new HouseAllViewModel
+            {
+                Id = h.Id.ToString(),
+                Title = h.Title,
+                Address = h.Address,
+                ImageUrl = h.ImageUrl,
+                PricePerMonth = h.PricePerMonth,
+                IsRented = h.RenterId.HasValue
+            })
+            .ToArrayAsync();
+    }
 }

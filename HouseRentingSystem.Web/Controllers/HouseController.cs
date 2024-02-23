@@ -36,6 +36,27 @@ public class HouseController : BaseController
     }
 
     [HttpGet]
+    public async Task<IActionResult> Mine()
+    {
+        IEnumerable<HouseAllViewModel> houses;
+
+        string userId = this.User.GetId()!;
+
+        if (await this._agentService.AgentExistByUserIdAsync(userId))
+        {
+            string? agentId = await this._agentService.GetAgentIdByUserIdAsync(userId);
+
+            houses = await this._houseService.AllByAgentIdAsync(agentId!);
+        }
+        else
+        {
+            houses = await this._houseService.AllByUserIdAsync(userId);
+        }
+
+        return this.View(houses);
+    }
+
+    [HttpGet]
     public async Task<IActionResult> Add()
     {
         bool isAgent = await this._agentService.AgentExistByUserIdAsync(this.User.GetId()!);

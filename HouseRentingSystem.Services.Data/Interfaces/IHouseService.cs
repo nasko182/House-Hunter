@@ -9,6 +9,7 @@ public interface IHouseService
 {
     Task<IEnumerable<IndexViewModel>> LastThreeHosesAsync();
     Task CreateHouseAsync(HouseFormModel model, string agentId);
-
     Task<AllHousesFilteredAndPagedServiceModel> AllAsync(AllHousesQueryModel model);
+    Task<IEnumerable<HouseAllViewModel>> AllByAgentIdAsync(string agentId);
+    Task<IEnumerable<HouseAllViewModel>> AllByUserIdAsync(string userId);
 }
