@@ -10,9 +10,8 @@ public class HouseEntityConfiguration : IEntityTypeConfiguration<House>
     public void Configure(EntityTypeBuilder<House> builder)
     {
         builder
-            .Property(h => h.CreatedOn)
-            .HasDefaultValue(DateTime.UtcNow);
-
+            .Property(h => h.IsActive)
+            .HasDefaultValue(true);
         builder
             .HasOne(h => h.Category)
             .WithMany(c => c.Houses)

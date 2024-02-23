@@ -10,6 +10,7 @@ public class House
     {
         this.Id = Guid.NewGuid();
         this.CreatedOn = DateTime.UtcNow;
+        this.IsActive = true;
     }
     [Key]
     public Guid Id { get; set; }
@@ -33,6 +34,8 @@ public class House
     public decimal PricePerMonth { get; set; }
 
     public DateTime CreatedOn { get; set; }
+
+    public bool IsActive { get; set; }
 
     public int CategoryId { get; set; }
 
