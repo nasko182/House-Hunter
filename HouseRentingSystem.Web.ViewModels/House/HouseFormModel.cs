@@ -1,7 +1,6 @@
 ﻿namespace HouseRentingSystem.Web.ViewModels.House;
 
 using System.ComponentModel.DataAnnotations;
-using System.Net.Mime;
 using Category;
 
 using static Common.EntityValidationConstants.House;
@@ -14,23 +13,23 @@ public class HouseFormModel
     }
 
     [Required]
-    [StringLength(TitleMaxLength,MinimumLength = TitleMinLength)]
+    [StringLength(TitleMaxLength, MinimumLength = TitleMinLength)]
     public string Title { get; set; } = null!;
 
     [Required]
-    [StringLength(AddressMaxLength,MinimumLength = AddressMinLength)]
+    [StringLength(AddressMaxLength, MinimumLength = AddressMinLength)]
     public string Address { get; set; } = null!;
 
     [Required]
-    [StringLength(DescriptionMaxLength,MinimumLength = DescriptionMinLength)]
-    public string Description { get; set; } =null!;
+    [StringLength(DescriptionMaxLength, MinimumLength = DescriptionMinLength)]
+    public string Description { get; set; } = null!;
 
     [Required]
     [StringLength(ImageUrlMaxLength)]
     [Display(Name = "Image Link")]
     public string ImageUrl { get; set; } = null!;
 
-    [Range(typeof(decimal),PricePerMonthMinValue,PricePerMonthMaxValue)]
+    [Range(typeof(decimal), PricePerMonthMinValue, PricePerMonthMaxValue)]
     [Display(Name = "Monthly Price")]
     public decimal PricePerMonth { get; set; }
 

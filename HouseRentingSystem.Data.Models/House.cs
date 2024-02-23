@@ -8,7 +8,8 @@ public class House
 {
     public House()
     {
-        this.Id= Guid.NewGuid();
+        this.Id = Guid.NewGuid();
+        this.CreatedOn = DateTime.UtcNow;
     }
     [Key]
     public Guid Id { get; set; }

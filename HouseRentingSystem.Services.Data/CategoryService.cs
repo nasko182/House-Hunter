@@ -28,4 +28,12 @@ public class CategoryService : ICategoryService
     {
         return this._dbContext.Categories.AnyAsync(c => c.Id == categoryId);
     }
+
+    public async Task<IEnumerable<string>> GetAllCategoryNamesAsync()
+    {
+        return await this._dbContext
+            .Categories
+            .Select(c => c.Name)
+            .ToArrayAsync();
+    }
 }

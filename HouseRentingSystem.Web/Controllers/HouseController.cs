@@ -4,6 +4,7 @@ using Infrastructure.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Data.Interfaces;
+using Services.Data.Models.House;
 using ViewModels.House;
 
 using static Common.NotificationMessagesConstants;
@@ -22,9 +23,16 @@ public class HouseController : BaseController
     }
 
     [AllowAnonymous]
-    public async Task<IActionResult> All()
+    [HttpGet]
+    public async Task<IActionResult> All([FromQuery] AllHousesQueryModel model)
     {
-        return this.View();
+        AllHousesFilteredAndPagedServiceModel serviceModel = await this._houseService.AllAsync(model);
+
+        model.Houses = serviceModel.Houses;
+        model.TotalHouses = serviceModel.TotalHouseCount;
+        model.Categories = await this._categoryService.GetAllCategoryNamesAsync();
+
+        return this.View(model);
     }
 
     [HttpGet]
