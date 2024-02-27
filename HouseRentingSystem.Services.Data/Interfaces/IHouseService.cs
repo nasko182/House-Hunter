@@ -19,4 +19,9 @@ public interface IHouseService
     Task EditHouseByIdAndFormModelAsync(string houseId, HouseFormModel model);
     Task<DeleteHouseFormModel> GetHouseForDeleteAsync(string houseId);
     Task DeleteByIdAsync(string houseId);
+    Task<bool> IsRentedAsync(string houseId);
+    Task<bool> IsRentedByUserAsync(string houseId, string userId);
+    Task RentAsync(string houseId, string userId);
+    Task LeaveAsync(string houseId, string userId);
+
 }

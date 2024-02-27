@@ -243,6 +243,51 @@ public class HouseService : IHouseService
         await this._dbContext.SaveChangesAsync();
     }
 
+    public async Task<bool> IsRentedAsync(string houseId)
+    {
+        House house = await this._dbContext
+            .Houses
+            .Where(h => h.IsActive)
+            .FirstAsync(h => h.Id.ToString() == houseId);
+
+        return house.RenterId.HasValue;
+    }
+
+    public async Task<bool> IsRentedByUserAsync(string houseId, string userId)
+    {
+        House house = await this._dbContext
+            .Houses
+            .Where(h => h.IsActive)
+            .FirstAsync(h => h.Id.ToString() == houseId);
+
+        return house.RenterId.ToString() == userId;
+    }
+
+    public async Task RentAsync(string houseId, string userId)
+    {
+        House house = await this._dbContext
+            .Houses
+            .Where(h => h.IsActive)
+            .FirstAsync(h => h.Id.ToString() == houseId);
+
+        house.RenterId = Guid.Parse(userId);
+
+        await this._dbContext.SaveChangesAsync();
+    }
+
+    public async Task LeaveAsync(string houseId, string userId)
+    {
+        House house = await this._dbContext
+            .Houses
+            .Where(h => h.IsActive)
+            .FirstAsync(h => h.Id.ToString() == houseId &&
+                             h.RenterId.ToString() == userId);
+
+        house.RenterId = null;
+
+        await this._dbContext.SaveChangesAsync();
+    }
+
     public async Task<bool> IsAgentWithIdOwnerOfHouseWithIdAsync(string houseId, string agentId)
     {
         House house = await this._dbContext.Houses

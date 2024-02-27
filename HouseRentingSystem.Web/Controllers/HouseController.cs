@@ -57,9 +57,7 @@ public class HouseController : BaseController
         }
         catch
         {
-            this.TempData[ErrorMessage] = "Unexpected error occurred. Please try again later or contact administrator.";
-
-            return this.RedirectToAction("Index", "Home");
+            return this.GeneralError();
         }
     }
 
@@ -85,9 +83,7 @@ public class HouseController : BaseController
         }
         catch
         {
-            this.TempData[ErrorMessage] = "Unexpected error occurred. Please try again later or contact administrator.";
-
-            return this.RedirectToAction("Index", "Home");
+            return this.GeneralError();
         }
     }
 
@@ -157,40 +153,17 @@ public class HouseController : BaseController
         }
         catch
         {
-            this.TempData[ErrorMessage] = "Unexpected error occurred. Please try again later or contact administrator.";
-
-            return this.RedirectToAction("Index", "Home");
+            return this.GeneralError();
         }
     }
 
     [HttpGet]
     public async Task<IActionResult> Edit(string id)
     {
-        bool houseExist = await this._houseService.ExistByIdAsync(id);
-        if (!houseExist)
+        IActionResult? validationRedirectAction = await this.MakeValidations(id);
+        if (validationRedirectAction != null)
         {
-            this.TempData[ErrorMessage] = "House with provided id does not exist!";
-
-            return this.RedirectToAction("All", "House");
-        }
-
-        bool isAgent = await this._agentService.AgentExistByUserIdAsync(this.User.GetId()!);
-        if (!isAgent)
-        {
-            this.TempData[ErrorMessage] = "You must become an agent in order to edit houses!";
-
-            return this.RedirectToAction("Become", "Agent");
-        }
-
-        string? agentId = await this._agentService.GetAgentIdByUserIdAsync(this.User.GetId()!);
-
-        bool isOwner = await this._houseService.IsAgentWithIdOwnerOfHouseWithIdAsync(id, agentId!);
-
-        if (!isOwner)
-        {
-            this.TempData[ErrorMessage] = "You must be the agent owner of the house!";
-
-            this.RedirectToAction("Mine", "House");
+            return validationRedirectAction;
         }
 
         try
@@ -203,9 +176,7 @@ public class HouseController : BaseController
         }
         catch
         {
-            this.TempData[ErrorMessage] = "Unexpected error occurred. Please try again later or contact administrator.";
-
-            return this.RedirectToAction("Index", "Home");
+            return this.GeneralError();
         }
 
     }
@@ -219,33 +190,11 @@ public class HouseController : BaseController
             return this.View(model);
         }
 
-        bool houseExist = await this._houseService.ExistByIdAsync(id);
-        if (!houseExist)
+        IActionResult? validationRedirectAction = await this.MakeValidations(id);
+        if (validationRedirectAction != null)
         {
-            this.TempData[ErrorMessage] = "House with provided id does not exist!";
-
-            return this.RedirectToAction("All", "House");
+            return validationRedirectAction;
         }
-
-        bool isAgent = await this._agentService.AgentExistByUserIdAsync(this.User.GetId()!);
-        if (!isAgent)
-        {
-            this.TempData[ErrorMessage] = "You must become an agent in order to edit houses!";
-
-            return this.RedirectToAction("Become", "Agent");
-        }
-
-        string? agentId = await this._agentService.GetAgentIdByUserIdAsync(this.User.GetId()!);
-
-        bool isOwner = await this._houseService.IsAgentWithIdOwnerOfHouseWithIdAsync(id, agentId!);
-
-        if (!isOwner)
-        {
-            this.TempData[ErrorMessage] = "You must be the agent owner of the house!";
-
-            this.RedirectToAction("Mine", "House");
-        }
-
 
         try
         {
@@ -267,31 +216,10 @@ public class HouseController : BaseController
     [HttpGet]
     public async Task<IActionResult> Delete(string id)
     {
-        bool houseExist = await this._houseService.ExistByIdAsync(id);
-        if (!houseExist)
+        IActionResult? validationRedirectAction = await this.MakeValidations(id);
+        if (validationRedirectAction != null)
         {
-            this.TempData[ErrorMessage] = "House with provided id does not exist!";
-
-            return this.RedirectToAction("All", "House");
-        }
-
-        bool isAgent = await this._agentService.AgentExistByUserIdAsync(this.User.GetId()!);
-        if (!isAgent)
-        {
-            this.TempData[ErrorMessage] = "You must become an agent in order to edit houses!";
-
-            return this.RedirectToAction("Become", "Agent");
-        }
-
-        string? agentId = await this._agentService.GetAgentIdByUserIdAsync(this.User.GetId()!);
-
-        bool isOwner = await this._houseService.IsAgentWithIdOwnerOfHouseWithIdAsync(id, agentId!);
-
-        if (!isOwner)
-        {
-            this.TempData[ErrorMessage] = "You must be the agent owner of the house!";
-
-            this.RedirectToAction("Mine", "House");
+            return validationRedirectAction;
         }
 
         try
@@ -303,14 +231,120 @@ public class HouseController : BaseController
         }
         catch
         {
-            this.TempData[ErrorMessage] = "Unexpected error occurred. Please try again later or contact administrator.";
-
-            return this.RedirectToAction("Index", "Home");
+            return this.GeneralError();
         }
     }
 
     [HttpPost]
     public async Task<IActionResult> Delete(string id, DeleteHouseFormModel model)
+    {
+        IActionResult? validationRedirectAction = await this.MakeValidations(id);
+        if (validationRedirectAction != null)
+        {
+            return validationRedirectAction;
+        }
+
+        try
+        {
+            await this._houseService.DeleteByIdAsync(id);
+
+            this.TempData[SuccessMessage] = "The house was successfully deleted";
+
+            return this.RedirectToAction("Mine", "House");
+        }
+        catch
+        {
+            return this.GeneralError();
+        }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Rent(string id)
+    {
+        bool houseExist = await this._houseService.ExistByIdAsync(id);
+        if (!houseExist)
+        {
+            this.TempData[ErrorMessage] = "House with provided id does not exist!";
+
+            return this.RedirectToAction("All", "House");
+        }
+
+        string userId = this.User.GetId()!;
+        bool isAgent = await this._agentService.AgentExistByUserIdAsync(userId);
+        if (isAgent)
+        {
+            this.TempData[ErrorMessage] = "Agents cannot rent houses";
+
+            return this.RedirectToAction("Index", "Home");
+
+        }
+
+        bool isRented = await this._houseService.IsRentedAsync(id);
+        if (isRented)
+        {
+            this.TempData[ErrorMessage] = "Selected house is already rented.Please select another house";
+            return this.RedirectToAction("All", "House");
+        }
+
+        try
+        {
+            await this._houseService.RentAsync(id, userId);
+
+            return this.RedirectToAction("Mine", "House");
+        }
+        catch
+        {
+            return this.GeneralError();
+        }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Leave(string id)
+    {
+        bool houseExist = await this._houseService.ExistByIdAsync(id);
+        if (!houseExist)
+        {
+            this.TempData[ErrorMessage] = "House with provided id does not exist!";
+
+            return this.RedirectToAction("All", "House");
+        }
+
+        string userId = this.User.GetId()!;
+        bool isAgent = await this._agentService.AgentExistByUserIdAsync(userId);
+        if (isAgent)
+        {
+            this.TempData[ErrorMessage] = "Agents cannot rent houses";
+            return this.RedirectToAction("Index", "Home");
+
+        }
+
+        bool isRented = await this._houseService.IsRentedAsync(id);
+        if (!isRented)
+        {
+            this.TempData[ErrorMessage] = "This house is not rented yet. You can't leave not rented house";
+            return this.RedirectToAction("Mine", "House");
+        }
+
+        bool isRentedByUser = await this._houseService.IsRentedByUserAsync(id, userId);
+        if (!isRentedByUser)
+        {
+            this.TempData[ErrorMessage] = "This house is not rented by you. You can't leave not rented house";
+            return this.RedirectToAction("Mine", "House");
+        }
+
+        try
+        {
+            await this._houseService.LeaveAsync(id, userId);
+
+            return this.RedirectToAction("Mine", "House");
+        }
+        catch
+        {
+            return this.GeneralError();
+        }
+    }
+
+    private async Task<IActionResult?> MakeValidations(string id)
     {
         bool houseExist = await this._houseService.ExistByIdAsync(id);
         if (!houseExist)
@@ -326,6 +360,7 @@ public class HouseController : BaseController
             this.TempData[ErrorMessage] = "You must become an agent in order to edit houses!";
 
             return this.RedirectToAction("Become", "Agent");
+
         }
 
         string? agentId = await this._agentService.GetAgentIdByUserIdAsync(this.User.GetId()!);
@@ -336,22 +371,16 @@ public class HouseController : BaseController
         {
             this.TempData[ErrorMessage] = "You must be the agent owner of the house!";
 
-            this.RedirectToAction("Mine", "House");
-        }
-
-        try
-        {
-            await this._houseService.DeleteByIdAsync(id);
-
-            this.TempData[SuccessMessage] = "The house was successfully deleted";
-
             return this.RedirectToAction("Mine", "House");
         }
-        catch
-        {
-            this.TempData[ErrorMessage] = "Unexpected error occurred. Please try again later or contact administrator.";
 
-            return this.RedirectToAction("Index", "Home");
-        }
+        return null;
+    }
+
+    private IActionResult GeneralError()
+    {
+        this.TempData[ErrorMessage] = "Unexpected error occurred. Please try again later or contact administrator.";
+
+        return this.RedirectToAction("Index", "Home");
     }
 }
