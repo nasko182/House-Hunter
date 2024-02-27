@@ -133,4 +133,10 @@ public class HouseController : BaseController
 
         return this.View(model);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> Edit(string id)
+    {
+
+    }
 }

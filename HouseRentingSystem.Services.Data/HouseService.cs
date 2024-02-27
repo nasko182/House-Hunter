@@ -148,7 +148,7 @@ public class HouseService : IHouseService
             .ToArrayAsync();
     }
 
-    public async Task<HouseDetailsViewModel?> GetDetailsByHouseIdAsync(string houseId)
+    public async Task<HouseDetailsViewModel> GetDetailsByHouseIdAsync(string houseId)
     {
         return await this._dbContext.Houses
             .Include(h => h.Category)
@@ -171,6 +171,35 @@ public class HouseService : IHouseService
                     Email = h.Agent.User.Email,
                     PhoneNumber = h.Agent.PhoneNumber,
                 }
-            }).FirstOrDefaultAsync();
+            }).FirstAsync();
+    }
+
+    public async Task<bool> ExistByIdAsync(string houseId)
+    {
+        return await this._dbContext
+            .Houses
+            .Where(h => h.IsActive)
+            .AnyAsync(h => h.Id.ToString() == houseId);
+    }
+
+    public async Task<HouseFormModel> GetHouseForEditByIdAsync(string houseId)
+    {
+        return await this._dbContext.Houses
+            .Where(h => h.IsActive &&
+                        h.Id.ToString() == houseId)
+            .Select(h => new HouseFormModel()
+            {
+                Title = h.Title,
+                Address = h.Address,
+                ImageUrl = h.ImageUrl,
+                PricePerMonth = h.PricePerMonth,
+                Description = h.Description,
+                CategoryId = h.CategoryId
+            }).FirstAsync();
+    }
+
+    public Task DeleteByIdAsync(string houseId)
+    {
+        throw new NotImplementedException();
     }
 }
