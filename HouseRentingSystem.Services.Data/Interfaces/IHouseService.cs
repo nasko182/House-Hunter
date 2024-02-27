@@ -12,4 +12,5 @@ public interface IHouseService
     Task<AllHousesFilteredAndPagedServiceModel> AllAsync(AllHousesQueryModel model);
     Task<IEnumerable<HouseAllViewModel>> AllByAgentIdAsync(string agentId);
     Task<IEnumerable<HouseAllViewModel>> AllByUserIdAsync(string userId);
+    Task<HouseDetailsViewModel?> GetDetailsByHouseIdAsync(string houseId);
 }

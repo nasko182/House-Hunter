@@ -117,4 +117,20 @@ public class HouseController : BaseController
 
         return this.RedirectToAction("All", "House");
     }
+
+    [HttpGet]
+    [AllowAnonymous]
+    public async Task<IActionResult> Details(string id)
+    {
+        HouseDetailsViewModel? model = await this._houseService.GetDetailsByHouseIdAsync(id);
+
+        if (model == null)
+        {
+            this.TempData[ErrorMessage] = "House with provided id does not exist!";
+
+            return this.RedirectToAction("All", "House");
+        }
+
+        return this.View(model);
+    }
 }

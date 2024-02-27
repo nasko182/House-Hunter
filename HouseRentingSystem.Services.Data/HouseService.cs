@@ -6,6 +6,7 @@ using Interfaces;
 using HouseRentingSystem.Data;
 using HouseRentingSystem.Data.Models;
 using Models.House;
+using Web.ViewModels.Agent;
 using Web.ViewModels.Home;
 using Web.ViewModels.House;
 using Web.ViewModels.House.Enums;
@@ -114,6 +115,7 @@ public class HouseService : IHouseService
     {
         return await this._dbContext
             .Houses
+            .Where(h => h.IsActive)
             .Where(h => h.AgentId.ToString() == agentId)
             .Select(h => new HouseAllViewModel
             {
@@ -131,7 +133,8 @@ public class HouseService : IHouseService
     {
         return await this._dbContext
             .Houses
-            .Where(h => h.RenterId.HasValue &&
+            .Where(h => h.IsActive &&
+                        h.RenterId.HasValue &&
                         h.RenterId.ToString() == userId)
             .Select(h => new HouseAllViewModel
             {
@@ -143,5 +146,31 @@ public class HouseService : IHouseService
                 IsRented = h.RenterId.HasValue
             })
             .ToArrayAsync();
+    }
+
+    public async Task<HouseDetailsViewModel?> GetDetailsByHouseIdAsync(string houseId)
+    {
+        return await this._dbContext.Houses
+            .Include(h => h.Category)
+            .Include(h => h.Agent)
+            .ThenInclude(a => a.User)
+            .Where(h => h.IsActive &&
+                        h.Id.ToString() == houseId)
+            .Select(h => new HouseDetailsViewModel
+            {
+                Id = h.Id.ToString(),
+                Title = h.Title,
+                Address = h.Address,
+                ImageUrl = h.ImageUrl,
+                PricePerMonth = h.PricePerMonth,
+                IsRented = h.RenterId.HasValue,
+                Description = h.Description,
+                Category = h.Category.Name,
+                Agent = new AgentInfoOnHouseViewModel
+                {
+                    Email = h.Agent.User.Email,
+                    PhoneNumber = h.Agent.PhoneNumber,
+                }
+            }).FirstOrDefaultAsync();
     }
 }
