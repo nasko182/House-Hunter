@@ -122,20 +122,59 @@ public class HouseController : BaseController
     [AllowAnonymous]
     public async Task<IActionResult> Details(string id)
     {
-        HouseDetailsViewModel? model = await this._houseService.GetDetailsByHouseIdAsync(id);
 
-        if (model == null)
+        bool houseExist = await this._houseService.ExistByIdAsync(id);
+        if (!houseExist)
         {
             this.TempData[ErrorMessage] = "House with provided id does not exist!";
 
             return this.RedirectToAction("All", "House");
         }
 
+        HouseDetailsViewModel model = await this._houseService.GetDetailsByHouseIdAsync(id);
+
         return this.View(model);
     }
 
     [HttpGet]
     public async Task<IActionResult> Edit(string id)
+    {
+        bool houseExist = await this._houseService.ExistByIdAsync(id);
+        if (!houseExist)
+        {
+            this.TempData[ErrorMessage] = "House with provided id does not exist!";
+
+            return this.RedirectToAction("All", "House");
+        }
+
+        bool isAgent = await this._agentService.AgentExistByUserIdAsync(this.User.GetId()!);
+        if (!isAgent)
+        {
+            this.TempData[ErrorMessage] = "You must become an agent in order to edit houses!";
+
+            return this.RedirectToAction("Become", "Agent");
+        }
+
+        string? agentId = await this._agentService.GetAgentIdByUserIdAsync(this.User.GetId()!);
+
+        bool isOwner = await this._houseService.IsAgentWithIdOwnerOfHouseWithIdAsync(id, agentId!);
+
+        if (!isOwner)
+        {
+            this.TempData[ErrorMessage] = "You must be the agent owner of the house!";
+
+            this.RedirectToAction("Mine", "House");
+        }
+
+        HouseFormModel model = await this._houseService.GetHouseForEditByIdAsync(id);
+
+        model.Categories = await this._categoryService.AllCategoriesAsync();
+
+        return this.View(model);
+    }
+
+    [HttpPost]
+    public
     {
 
     }

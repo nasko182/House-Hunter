@@ -202,4 +202,13 @@ public class HouseService : IHouseService
     {
         throw new NotImplementedException();
     }
+
+    public async Task<bool> IsAgentWithIdOwnerOfHouseWithIdAsync(string houseId, string agentId)
+    {
+        House house = await this._dbContext.Houses
+            .Where(h => h.IsActive)
+            .FirstAsync(h => h.Id.ToString() == houseId);
+
+        return house.AgentId.ToString() == agentId;
+    }
 }
