@@ -55,7 +55,7 @@ public class HouseController : BaseController
 
             return this.View(houses);
         }
-        catch (Exception e)
+        catch
         {
             this.TempData[ErrorMessage] = "Unexpected error occurred. Please try again later or contact administrator.";
 
@@ -73,6 +73,7 @@ public class HouseController : BaseController
 
             return this.RedirectToAction("Become", "Agent");
         }
+
         try
         {
             HouseFormModel formModel = new HouseFormModel()
@@ -82,7 +83,7 @@ public class HouseController : BaseController
 
             return this.View(formModel);
         }
-        catch (Exception e)
+        catch
         {
             this.TempData[ErrorMessage] = "Unexpected error occurred. Please try again later or contact administrator.";
 
@@ -114,12 +115,13 @@ public class HouseController : BaseController
             return this.View(model);
         }
 
+        string houseId;
         try
         {
             string? agentId = await this._agentService
                 .GetAgentIdByUserIdAsync(this.User.GetId()!);
 
-            await this._houseService.CreateHouseAsync(model, agentId!);
+            houseId = await this._houseService.CreateHouseAsync(model, agentId!);
         }
         catch
         {
@@ -130,7 +132,8 @@ public class HouseController : BaseController
             return this.View(model);
         }
 
-        return this.RedirectToAction("Details", "House", new { id = model.});
+        this.TempData[SuccessMessage] = "House was added successfully!";
+        return this.RedirectToAction("Details", "House", new { id = houseId });
     }
 
     [HttpGet]
@@ -152,7 +155,7 @@ public class HouseController : BaseController
 
             return this.View(model);
         }
-        catch (Exception e)
+        catch
         {
             this.TempData[ErrorMessage] = "Unexpected error occurred. Please try again later or contact administrator.";
 
@@ -198,7 +201,7 @@ public class HouseController : BaseController
 
             return this.View(model);
         }
-        catch (Exception e)
+        catch
         {
             this.TempData[ErrorMessage] = "Unexpected error occurred. Please try again later or contact administrator.";
 
@@ -246,16 +249,109 @@ public class HouseController : BaseController
 
         try
         {
-            await this._houseService.EditHouseByIdAndFormModel(id, model);
+            await this._houseService.EditHouseByIdAndFormModelAsync(id, model);
         }
         catch
         {
-            this.ModelState.AddModelError(string.Empty, "Unexpected error occurred while trying to update the house. Please try again later or contact administrator.");
+            this.ModelState.AddModelError(string.Empty,
+                "Unexpected error occurred while trying to update the house. Please try again later or contact administrator.");
 
             model.Categories = await this._categoryService.AllCategoriesAsync();
             return this.View(model);
         }
 
+        this.TempData[SuccessMessage] = "House was edited successfully!";
         return this.RedirectToAction("Details", "House", new { id });
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Delete(string id)
+    {
+        bool houseExist = await this._houseService.ExistByIdAsync(id);
+        if (!houseExist)
+        {
+            this.TempData[ErrorMessage] = "House with provided id does not exist!";
+
+            return this.RedirectToAction("All", "House");
+        }
+
+        bool isAgent = await this._agentService.AgentExistByUserIdAsync(this.User.GetId()!);
+        if (!isAgent)
+        {
+            this.TempData[ErrorMessage] = "You must become an agent in order to edit houses!";
+
+            return this.RedirectToAction("Become", "Agent");
+        }
+
+        string? agentId = await this._agentService.GetAgentIdByUserIdAsync(this.User.GetId()!);
+
+        bool isOwner = await this._houseService.IsAgentWithIdOwnerOfHouseWithIdAsync(id, agentId!);
+
+        if (!isOwner)
+        {
+            this.TempData[ErrorMessage] = "You must be the agent owner of the house!";
+
+            this.RedirectToAction("Mine", "House");
+        }
+
+        try
+        {
+            DeleteHouseFormModel model = await this._houseService.GetHouseForDeleteAsync(id);
+
+            return this.View(model);
+
+        }
+        catch
+        {
+            this.TempData[ErrorMessage] = "Unexpected error occurred. Please try again later or contact administrator.";
+
+            return this.RedirectToAction("Index", "Home");
+        }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Delete(string id, DeleteHouseFormModel model)
+    {
+        bool houseExist = await this._houseService.ExistByIdAsync(id);
+        if (!houseExist)
+        {
+            this.TempData[ErrorMessage] = "House with provided id does not exist!";
+
+            return this.RedirectToAction("All", "House");
+        }
+
+        bool isAgent = await this._agentService.AgentExistByUserIdAsync(this.User.GetId()!);
+        if (!isAgent)
+        {
+            this.TempData[ErrorMessage] = "You must become an agent in order to edit houses!";
+
+            return this.RedirectToAction("Become", "Agent");
+        }
+
+        string? agentId = await this._agentService.GetAgentIdByUserIdAsync(this.User.GetId()!);
+
+        bool isOwner = await this._houseService.IsAgentWithIdOwnerOfHouseWithIdAsync(id, agentId!);
+
+        if (!isOwner)
+        {
+            this.TempData[ErrorMessage] = "You must be the agent owner of the house!";
+
+            this.RedirectToAction("Mine", "House");
+        }
+
+        try
+        {
+            await this._houseService.DeleteByIdAsync(id);
+
+            this.TempData[SuccessMessage] = "The house was successfully deleted";
+
+            return this.RedirectToAction("Mine", "House");
+        }
+        catch
+        {
+            this.TempData[ErrorMessage] = "Unexpected error occurred. Please try again later or contact administrator.";
+
+            return this.RedirectToAction("Index", "Home");
+        }
     }
 }

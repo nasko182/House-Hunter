@@ -201,7 +201,7 @@ public class HouseService : IHouseService
             }).FirstAsync();
     }
 
-    public async Task EditHouseByIdAndFormModel(string houseId, HouseFormModel model)
+    public async Task EditHouseByIdAndFormModelAsync(string houseId, HouseFormModel model)
     {
         House house = await this._dbContext.Houses
             .Where(h => h.IsActive)
@@ -217,9 +217,30 @@ public class HouseService : IHouseService
         await this._dbContext.SaveChangesAsync();
     }
 
-    public Task DeleteByIdAsync(string houseId)
+    public async Task<DeleteHouseFormModel> GetHouseForDeleteAsync(string houseId)
     {
-        throw new NotImplementedException();
+        return await this._dbContext.Houses
+            .Where(h => h.IsActive &&
+                        h.Id.ToString() == houseId)
+            .Select(h => new DeleteHouseFormModel
+            {
+                Title = h.Title,
+                Address = h.Address,
+                ImageUrl = h.ImageUrl
+            })
+            .FirstAsync();
+    }
+
+    public async Task DeleteByIdAsync(string houseId)
+    {
+        House house = await this._dbContext
+            .Houses
+            .Where(h => h.IsActive)
+            .FirstAsync(h => h.Id.ToString() == houseId);
+
+        house.IsActive = false;
+
+        await this._dbContext.SaveChangesAsync();
     }
 
     public async Task<bool> IsAgentWithIdOwnerOfHouseWithIdAsync(string houseId, string agentId)
