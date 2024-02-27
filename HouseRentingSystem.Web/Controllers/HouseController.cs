@@ -328,7 +328,7 @@ public class HouseController : BaseController
         bool isRentedByUser = await this._houseService.IsRentedByUserAsync(id, userId);
         if (!isRentedByUser)
         {
-            this.TempData[ErrorMessage] = "This house is not rented by you. You can't leave not rented house";
+            this.TempData[ErrorMessage] = "Selected house is not rented by you. Please select one of your houses";
             return this.RedirectToAction("Mine", "House");
         }
 
