@@ -38,22 +38,29 @@ public class HouseController : BaseController
     [HttpGet]
     public async Task<IActionResult> Mine()
     {
-        IEnumerable<HouseAllViewModel> houses;
-
         string userId = this.User.GetId()!;
-
-        if (await this._agentService.AgentExistByUserIdAsync(userId))
+        try
         {
-            string? agentId = await this._agentService.GetAgentIdByUserIdAsync(userId);
+            IEnumerable<HouseAllViewModel> houses;
+            if (await this._agentService.AgentExistByUserIdAsync(userId))
+            {
+                string? agentId = await this._agentService.GetAgentIdByUserIdAsync(userId);
 
-            houses = await this._houseService.AllByAgentIdAsync(agentId!);
+                houses = await this._houseService.AllByAgentIdAsync(agentId!);
+            }
+            else
+            {
+                houses = await this._houseService.AllByUserIdAsync(userId);
+            }
+
+            return this.View(houses);
         }
-        else
+        catch (Exception e)
         {
-            houses = await this._houseService.AllByUserIdAsync(userId);
-        }
+            this.TempData[ErrorMessage] = "Unexpected error occurred. Please try again later or contact administrator.";
 
-        return this.View(houses);
+            return this.RedirectToAction("Index", "Home");
+        }
     }
 
     [HttpGet]
@@ -66,13 +73,21 @@ public class HouseController : BaseController
 
             return this.RedirectToAction("Become", "Agent");
         }
-
-        HouseFormModel formModel = new HouseFormModel()
+        try
         {
-            Categories = await this._categoryService.AllCategoriesAsync()
-        };
+            HouseFormModel formModel = new HouseFormModel()
+            {
+                Categories = await this._categoryService.AllCategoriesAsync()
+            };
 
-        return this.View(formModel);
+            return this.View(formModel);
+        }
+        catch (Exception e)
+        {
+            this.TempData[ErrorMessage] = "Unexpected error occurred. Please try again later or contact administrator.";
+
+            return this.RedirectToAction("Index", "Home");
+        }
     }
 
     [HttpPost]
@@ -115,7 +130,7 @@ public class HouseController : BaseController
             return this.View(model);
         }
 
-        return this.RedirectToAction("All", "House");
+        return this.RedirectToAction("Details", "House", new { id = model.});
     }
 
     [HttpGet]
@@ -131,9 +146,18 @@ public class HouseController : BaseController
             return this.RedirectToAction("All", "House");
         }
 
-        HouseDetailsViewModel model = await this._houseService.GetDetailsByHouseIdAsync(id);
+        try
+        {
+            HouseDetailsViewModel model = await this._houseService.GetDetailsByHouseIdAsync(id);
 
-        return this.View(model);
+            return this.View(model);
+        }
+        catch (Exception e)
+        {
+            this.TempData[ErrorMessage] = "Unexpected error occurred. Please try again later or contact administrator.";
+
+            return this.RedirectToAction("Index", "Home");
+        }
     }
 
     [HttpGet]
@@ -166,16 +190,72 @@ public class HouseController : BaseController
             this.RedirectToAction("Mine", "House");
         }
 
-        HouseFormModel model = await this._houseService.GetHouseForEditByIdAsync(id);
+        try
+        {
+            HouseFormModel model = await this._houseService.GetHouseForEditByIdAsync(id);
 
-        model.Categories = await this._categoryService.AllCategoriesAsync();
+            model.Categories = await this._categoryService.AllCategoriesAsync();
 
-        return this.View(model);
+            return this.View(model);
+        }
+        catch (Exception e)
+        {
+            this.TempData[ErrorMessage] = "Unexpected error occurred. Please try again later or contact administrator.";
+
+            return this.RedirectToAction("Index", "Home");
+        }
+
     }
 
     [HttpPost]
-    public
+    public async Task<IActionResult> Edit(string id, HouseFormModel model)
     {
+        if (!this.ModelState.IsValid)
+        {
+            model.Categories = await this._categoryService.AllCategoriesAsync();
+            return this.View(model);
+        }
 
+        bool houseExist = await this._houseService.ExistByIdAsync(id);
+        if (!houseExist)
+        {
+            this.TempData[ErrorMessage] = "House with provided id does not exist!";
+
+            return this.RedirectToAction("All", "House");
+        }
+
+        bool isAgent = await this._agentService.AgentExistByUserIdAsync(this.User.GetId()!);
+        if (!isAgent)
+        {
+            this.TempData[ErrorMessage] = "You must become an agent in order to edit houses!";
+
+            return this.RedirectToAction("Become", "Agent");
+        }
+
+        string? agentId = await this._agentService.GetAgentIdByUserIdAsync(this.User.GetId()!);
+
+        bool isOwner = await this._houseService.IsAgentWithIdOwnerOfHouseWithIdAsync(id, agentId!);
+
+        if (!isOwner)
+        {
+            this.TempData[ErrorMessage] = "You must be the agent owner of the house!";
+
+            this.RedirectToAction("Mine", "House");
+        }
+
+
+        try
+        {
+            await this._houseService.EditHouseByIdAndFormModel(id, model);
+        }
+        catch
+        {
+            this.ModelState.AddModelError(string.Empty, "Unexpected error occurred while trying to update the house. Please try again later or contact administrator.");
+
+            model.Categories = await this._categoryService.AllCategoriesAsync();
+            return this.View(model);
+        }
+
+        return this.RedirectToAction("Details", "House", new { id });
     }
 }

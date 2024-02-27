@@ -38,9 +38,9 @@ public class HouseService : IHouseService
         return lastThreeHouses;
     }
 
-    public async Task CreateHouseAsync(HouseFormModel model, string agentId)
+    public async Task<string> CreateHouseAsync(HouseFormModel model, string agentId)
     {
-        await this._dbContext.Houses.AddAsync(new House
+        House house = new House
         {
             Title = model.Title,
             Address = model.Address,
@@ -49,9 +49,12 @@ public class HouseService : IHouseService
             PricePerMonth = model.PricePerMonth,
             CategoryId = model.CategoryId,
             AgentId = Guid.Parse(agentId)
-        });
+        };
 
+        await this._dbContext.Houses.AddAsync(house);
         await this._dbContext.SaveChangesAsync();
+
+        return house.Id.ToString();
     }
 
     public async Task<AllHousesFilteredAndPagedServiceModel> AllAsync(AllHousesQueryModel model)
@@ -196,6 +199,22 @@ public class HouseService : IHouseService
                 Description = h.Description,
                 CategoryId = h.CategoryId
             }).FirstAsync();
+    }
+
+    public async Task EditHouseByIdAndFormModel(string houseId, HouseFormModel model)
+    {
+        House house = await this._dbContext.Houses
+            .Where(h => h.IsActive)
+            .FirstAsync(h => h.Id.ToString() == houseId);
+
+        house.Title = model.Title;
+        house.Address = model.Address;
+        house.Description = model.Description;
+        house.ImageUrl = model.ImageUrl;
+        house.PricePerMonth = model.PricePerMonth;
+        house.CategoryId = model.CategoryId;
+
+        await this._dbContext.SaveChangesAsync();
     }
 
     public Task DeleteByIdAsync(string houseId)
