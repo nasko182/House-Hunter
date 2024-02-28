@@ -6,6 +6,7 @@ using Interfaces;
 using HouseRentingSystem.Data;
 using HouseRentingSystem.Data.Models;
 using Models.House;
+using Models.Statistics;
 using Web.ViewModels.Agent;
 using Web.ViewModels.Home;
 using Web.ViewModels.House;
@@ -286,6 +287,17 @@ public class HouseService : IHouseService
         house.RenterId = null;
 
         await this._dbContext.SaveChangesAsync();
+    }
+
+    public async Task<StatisticsServiceModel> GetStatisticsAsync()
+    {
+        return new StatisticsServiceModel
+        {
+            TotalHouses = await this._dbContext.Houses.CountAsync(),
+            TotalRents = await this._dbContext.Houses
+                .Where(h => h.RenterId.HasValue)
+                .CountAsync()
+        };
     }
 
     public async Task<bool> IsAgentWithIdOwnerOfHouseWithIdAsync(string houseId, string agentId)

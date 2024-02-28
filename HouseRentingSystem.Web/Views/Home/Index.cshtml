@@ -49,3 +49,23 @@
         <span class="visually-hidden">Next</span> 
     </button> 
 </div> 
+
+<div class="mb-5"></div>
+
+<div class="row">
+    <div class="col-12 text-center">
+        <button class="btn-primary" id="statisticsBtn">Show statistics</button>
+    </div>
+</div>
+
+<div class="mt-4 p-5 bg-light d-none" id="statisticsBox">
+    <div class="row">
+        <h2 class="col-md-6 text-center" id="totalHouses"></h2>
+        <h2 class="col-md-6 text-center" id="totalRents"></h2>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>statistics();</script>
+}
