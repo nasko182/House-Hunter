@@ -69,4 +69,19 @@ public class AgentService : IAgentService
 
         return agent.Id.ToString();
     }
+
+    public async Task<bool> HasHouseWithIdAsync(string userId, string houseId)
+    {
+        Agent? agent = await this._dbContext.Agents
+            .Include(a => a.OwnedHouses)
+            .FirstOrDefaultAsync(a => a.UserId.ToString() == userId);
+
+        if (agent == null)
+        {
+            return false;
+        }
+
+        return agent.OwnedHouses.Any(h => h.IsActive &&
+                                          h.Id.ToString().ToLower() == houseId.ToLower());
+    }
 }

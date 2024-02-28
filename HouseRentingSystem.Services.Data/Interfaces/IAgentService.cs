@@ -7,6 +7,7 @@ public interface IAgentService
     Task<bool> AgentExistByUserIdAsync(string userId);
     Task<bool> AgentExistByPhoneNumberAsync(string phoneNumber);
     Task<bool> HasRentsByUserAsync(string userId);
-    Task CreateAsync (string userId, BecomeAgentFormModel model);
+    Task CreateAsync(string userId, BecomeAgentFormModel model);
     Task<string?> GetAgentIdByUserIdAsync(string userId);
+    Task<bool> HasHouseWithIdAsync(string userId, string houseId);
 }

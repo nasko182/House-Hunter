@@ -1,8 +1,22 @@
-﻿@model HouseAllViewModel
+﻿@using HouseRentingSystem.Services.Data.Interfaces
+@using HouseRentingSystem.Web.Infrastructure.Extensions
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+
+@model HouseAllViewModel
+
+@inject IAgentService AgentService
+@inject IHouseService HouseService
+@{
+    string userId = this.User.GetId()!;
+
+    bool isUserAgent = await AgentService.AgentExistByUserIdAsync(userId);
+    bool isAgentOwnerOfTheHouse = await AgentService.HasHouseWithIdAsync(userId, Model.Id);
+    bool isUserOwnerOfTheHouse = await HouseService.IsRentedByUserAsync(Model.Id, userId);
+}
 
 <div class="col-md-4">
     <div class="card mb-3">
-        <img class="card-img-top" src="@Model.ImageUrl" alt="House Image">
+        <img class="card-img-top" style="height: 276px;" src="@Model.ImageUrl" alt="House Image">
         <div class="card-body text-center">
             <h4>@Model.Title</h4>
             <h6>Address: <b>@Model.Address</b></h6>
@@ -14,40 +28,53 @@
             <br />
             <a asp-controller="House"
                asp-action="Details"
-               asp-route-id="@Model.Id" 
+               asp-route-id="@Model.Id"
                class="btn btn-success">Details</a>
-            
+
             @if (this.User.Identity?.IsAuthenticated ?? false)
             {
-                <a asp-controller="House" 
-                   asp-action="Edit" 
-                   asp-route-id="@Model.Id" 
-                   class="btn btn-warning">Edit</a>
+                if (isUserAgent && isAgentOwnerOfTheHouse)
+                {
+                    <a asp-controller="House"
+                       asp-action="Edit"
+                       asp-route-id="@Model.Id"
+                       class="btn btn-warning">Edit</a>
 
-                <a asp-controller="House" 
-                   asp-action="Delete" 
-                   asp-route-id="@Model.Id"
-                   class="btn btn-danger">Delete</a>
+                    <a asp-controller="House"
+                       asp-action="Delete"
+                       asp-route-id="@Model.Id"
+                       class="btn btn-danger">Delete</a>
+                }
                 <p></p>
 
-                @if (!Model.IsRented)
+                @if (!isUserAgent)
                 {
-                    <form asp-controller="House" 
-                          asp-action="Rent" 
-                          asp-route-id="@Model.Id" 
-                          class="input-group-sm" 
-                          method="post">
-                        <input class="btn btn-primary" type="submit" value="Rent" />
-                    </form>
-                }
-                else
-                {
-                    <form asp-controller="House" 
-                          asp-action="Leave" 
-                          asp-route-id="@Model.Id" 
-                          method="post">
-                        <input class="btn btn-primary" type="submit" value="Leave" />
-                    </form>
+                    @if (!Model.IsRented)
+                    {
+                        <form asp-controller="House"
+                              asp-action="Rent"
+                              asp-route-id="@Model.Id"
+                              class="input-group-sm"
+                              method="post">
+                            <input class="btn btn-primary"
+                                   type="submit"
+                                   style="width: 65.6px;
+                                          height: 37.6px;"
+                                   value="Rent" />
+                        </form>
+                    }
+                    else
+                    {
+                        if (isUserOwnerOfTheHouse)
+                        {
+                            <form asp-controller="House"
+                                  asp-action="Leave"
+                                  asp-route-id="@Model.Id"
+                                  method="post">
+                                <input class="btn btn-primary" type="submit" value="Leave" />
+                            </form>
+                        }
+                    }
                 }
             }
         </div>

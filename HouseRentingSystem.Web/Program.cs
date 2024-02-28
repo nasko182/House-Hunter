@@ -7,6 +7,7 @@ using Data.Models;
 using Services.Data;
 using Infrastructure.Extensions;
 using Infrastructure.ModelBinders;
+using Microsoft.AspNetCore.Mvc;
 
 public class Program
 {
@@ -48,6 +49,7 @@ public class Program
             .AddMvcOptions(options =>
         {
             options.ModelBinderProviders.Insert(0, new DecimalModelBinderProvider());
+            options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>();
         });
 
         WebApplication app = builder.Build();

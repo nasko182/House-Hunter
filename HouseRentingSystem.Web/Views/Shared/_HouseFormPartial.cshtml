@@ -1,4 +1,5 @@
-﻿@model HouseFormModel
+﻿@using HouseRentingSystem.Web.ViewModels.Category
+@model HouseFormModel
 
 <div class="row">
     <div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
@@ -31,7 +32,7 @@
             <div class="form-group">
                 <label asp-for="CategoryId"></label>
                 <select asp-for="CategoryId" class="form-control">
-                    @foreach (var category in Model.Categories)
+                    @foreach (HouseSelectCategoryFormModel? category in Model.Categories)
                     {
                         <option value="@category.Id">@category.Name</option>
                     }

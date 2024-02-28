@@ -2,7 +2,7 @@
  
 @{ 
     ViewData["Title"] = "Home Page";     
-    var houses = Model.ToList(); 
+    List<IndexViewModel> houses = Model.ToList(); 
 } 
  
 @if (!houses.Any()) 
@@ -27,7 +27,7 @@
     <div class="carousel-inner"> 
         @for (int i = 0; i < houses.Count(); i++) 
         { 
-            var house = houses[i]; 
+            IndexViewModel house = houses[i]; 
             <div class="carousel-item @(i == 0 ? "active" : string.Empty)"> 
                 <img class="d-block w-100" style="height:500px"                  src="@house.ImageUrl" alt="@house.Title"> 
                 <div class="carousel-caption d-none d-md-block"> 
@@ -54,7 +54,7 @@
 
 <div class="row">
     <div class="col-12 text-center">
-        <button class="btn-primary" id="statisticsBtn">Show statistics</button>
+        <button class="btn btn-primary" id="statisticsBtn">Show statistics</button>
     </div>
 </div>
 
