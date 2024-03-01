@@ -10,7 +10,9 @@
 
 @inject IAgentService AgentService
 @{
-    bool isUserAgent = await AgentService.AgentExistByUserIdAsync(this.User.GetId()!);
+    string userId = User.GetId()!;
+    bool isUserAgent = await AgentService.AgentExistByUserIdAsync(userId);
+    ApplicationUser user = await UserManager.FindByIdAsync(userId);
 }
 
 <ul class="navbar-nav">
@@ -20,7 +22,7 @@
             <a class="nav-link text-dark"
                asp-area="Identity"
                asp-page="/Account/Manage/Index"
-               title="Manage">Hello,  @User.Identity?.Name!</a>
+               title="Manage">Hello,  @user.FirstName</a>
         </li>
         if (!isUserAgent)
         {
