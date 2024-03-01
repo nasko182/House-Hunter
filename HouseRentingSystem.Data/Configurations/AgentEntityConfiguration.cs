@@ -26,6 +26,14 @@ public class AgentEntityConfiguration : IEntityTypeConfiguration<Agent>
         };
         agents.Add(agent);
 
+        agent = new Agent
+        {
+            Id = Guid.Parse("6A347F29-0054-40EC-9F7A-1099D214430E"),
+            PhoneNumber = "+359888888887",
+            UserId = Guid.Parse("50C9CAF6-B29D-40BB-805B-60B2239C658D")
+        };
+        agents.Add(agent);
+
         return agents.ToArray();
     }
 }
