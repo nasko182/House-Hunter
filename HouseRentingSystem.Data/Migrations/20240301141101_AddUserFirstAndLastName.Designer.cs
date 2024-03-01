@@ -4,6 +4,7 @@ using HouseRentingSystem.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HouseRentingSystem.Data.Migrations
 {
     [DbContext(typeof(HouseRentingDbContext))]
-    partial class HouseRentingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240301141101_AddUserFirstAndLastName")]
+    partial class AddUserFirstAndLastName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,7 +42,7 @@ namespace HouseRentingSystem.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Agents", (string)null);
+                    b.ToTable("Agents");
 
                     b.HasData(
                         new
@@ -138,8 +140,6 @@ namespace HouseRentingSystem.Data.Migrations
                             ConcurrencyStamp = "98e12ef7-b59f-4729-af26-db318efad511",
                             Email = "peshoTheAgent@agent.com",
                             EmailConfirmed = false,
-                            FirstName = "Pesho",
-                            LastName = "Peshov",
                             LockoutEnabled = false,
                             NormalizedEmail = "PESHOTHEAGENT@AGENT.COM",
                             NormalizedUserName = "PESHOTHEAGENT@AGENT.COM",
@@ -156,8 +156,6 @@ namespace HouseRentingSystem.Data.Migrations
                             ConcurrencyStamp = "11d23514-fa48-496d-9605-7ba6ef6c1260",
                             Email = "goshoTheRenter@renter.com",
                             EmailConfirmed = false,
-                            FirstName = "Gosho",
-                            LastName = "Goshov",
                             LockoutEnabled = false,
                             NormalizedEmail = "GOSHOTHERENTER@RENTER.COM",
                             NormalizedUserName = "GOSHOTHERENTER@RENTER.COM",
@@ -166,24 +164,6 @@ namespace HouseRentingSystem.Data.Migrations
                             SecurityStamp = "HS3DCKS3MZ7VNAPRX5DZZWJHID2TSRXW",
                             TwoFactorEnabled = false,
                             UserName = "goshoTheRenter@renter.com"
-                        },
-                        new
-                        {
-                            Id = new Guid("50c9caf6-b29d-40bb-805b-60b2239c658d"),
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "WAU6MNVIDHYI7YF56TCS3MYLIELT4FRQ",
-                            Email = "admin@admin.com",
-                            EmailConfirmed = false,
-                            FirstName = "Admin",
-                            LastName = "Adminov",
-                            LockoutEnabled = false,
-                            NormalizedEmail = "ADMIN@ADMIN.COM",
-                            NormalizedUserName = "ADMIN@ADMIN.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEEZGWOYr44CMMcBewruzlneP9Yk+odUQQLsOdemYZ+mM6ntwsdUi5XVFguLBUJja+w==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "HS3DCKS3MZ7VNAPRX5DZZWJHID2TSRXW",
-                            TwoFactorEnabled = false,
-                            UserName = "admin@admin.com"
                         });
                 });
 
@@ -202,7 +182,7 @@ namespace HouseRentingSystem.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
 
                     b.HasData(
                         new
@@ -276,16 +256,16 @@ namespace HouseRentingSystem.Data.Migrations
 
                     b.HasIndex("RenterId");
 
-                    b.ToTable("Houses", (string)null);
+                    b.ToTable("Houses");
 
                     b.HasData(
                         new
                         {
-                            Id = new Guid("999deb5a-9920-4ffc-992e-462a0db2c30f"),
+                            Id = new Guid("fb68a24e-7eaf-475e-a1c5-8a880e088e4d"),
                             Address = "North London, UK (near the border)",
                             AgentId = new Guid("ace3ab43-264e-4b2d-b56d-274170bacfc5"),
                             CategoryId = 3,
-                            CreatedOn = new DateTime(2024, 3, 1, 14, 18, 53, 228, DateTimeKind.Utc).AddTicks(147),
+                            CreatedOn = new DateTime(2024, 3, 1, 14, 11, 0, 831, DateTimeKind.Utc).AddTicks(183),
                             Description = "A big house for your whole family. Don't miss to rent a house with three bedrooms.",
                             ImageUrl = "https://static4.superimoti.bg/property-images/big/84166_1.jpg",
                             IsActive = true,
@@ -295,11 +275,11 @@ namespace HouseRentingSystem.Data.Migrations
                         },
                         new
                         {
-                            Id = new Guid("f6d514bf-e266-41ef-bdf6-577f5e8412c1"),
+                            Id = new Guid("49b403b1-5215-48f7-9466-4f6c57911f95"),
                             Address = "Near the Sea Garden in Burgas, Bulgaria",
                             AgentId = new Guid("ace3ab43-264e-4b2d-b56d-274170bacfc5"),
                             CategoryId = 2,
-                            CreatedOn = new DateTime(2024, 3, 1, 14, 18, 53, 228, DateTimeKind.Utc).AddTicks(172),
+                            CreatedOn = new DateTime(2024, 3, 1, 14, 11, 0, 831, DateTimeKind.Utc).AddTicks(206),
                             Description = "It has the best comfort you will ever ask for. With two bedrooms, it is great for your family.",
                             ImageUrl = "https://cf.bstatic.com/xdata/images/hotel/max1024x768/179489660.jpg?k=2029f6d9589b49c95dcc9503a265e292c2cdfcb5277487a0050397c3f8dd545a&o=&hp=1",
                             IsActive = true,
@@ -308,11 +288,11 @@ namespace HouseRentingSystem.Data.Migrations
                         },
                         new
                         {
-                            Id = new Guid("f86fcc8b-a7ec-4e18-9940-3781f3dced3f"),
+                            Id = new Guid("267ef549-38ad-4790-951c-0887fd9703fb"),
                             Address = "Boyana Neighbourhood, Sofia, Bulgaria",
                             AgentId = new Guid("ace3ab43-264e-4b2d-b56d-274170bacfc5"),
                             CategoryId = 2,
-                            CreatedOn = new DateTime(2024, 3, 1, 14, 18, 53, 228, DateTimeKind.Utc).AddTicks(183),
+                            CreatedOn = new DateTime(2024, 3, 1, 14, 11, 0, 831, DateTimeKind.Utc).AddTicks(221),
                             Description = "This luxurious house is everything you will need. It is just excellent.",
                             ImageUrl = "https://i.pinimg.com/originals/a6/f5/85/a6f5850a77633c56e4e4ac4f867e3c00.jpg",
                             IsActive = true,
