@@ -10,6 +10,8 @@ public class HouseAllViewModel
 
     public string Address { get; set; } = null!;
 
+    public string? RenterEmail { get; set; }
+
     [Display(Name = "Image Link")]
     public string ImageUrl { get; set; } = null!;
 

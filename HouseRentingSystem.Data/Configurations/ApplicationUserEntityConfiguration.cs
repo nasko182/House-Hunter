@@ -10,10 +10,10 @@ public class ApplicationUserEntityConfiguration : IEntityTypeConfiguration<Appli
     public void Configure(EntityTypeBuilder<ApplicationUser> builder)
     {
         builder
-            .HasData(this.generateApplicationUsers());
+            .HasData(GenerateApplicationUsers());
     }
 
-    private ApplicationUser[] generateApplicationUsers()
+    private static ApplicationUser[] GenerateApplicationUsers()
     {
         ICollection<ApplicationUser> users = new HashSet<ApplicationUser>();
         ApplicationUser user;

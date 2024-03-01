@@ -24,10 +24,10 @@ public class HouseEntityConfiguration : IEntityTypeConfiguration<House>
             .HasForeignKey(h => h.AgentId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasData(this.GenerateHoses());
+        builder.HasData(GenerateHouses());
     }
 
-    private House[] GenerateHoses()
+    private static House[] GenerateHouses()
     {
         ICollection<House> houses = new HashSet<House>();
         House house;

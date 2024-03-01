@@ -9,10 +9,10 @@ public class CategoryEntityConfiguration : IEntityTypeConfiguration<Category>
 {
     public void Configure(EntityTypeBuilder<Category> builder)
     {
-        builder.HasData(this.GenerateCategory());
+        builder.HasData(GenerateCategory());
     }
 
-    private Category[] GenerateCategory()
+    private static Category[] GenerateCategory()
     {
         ICollection<Category> categories = new HashSet<Category>();
 

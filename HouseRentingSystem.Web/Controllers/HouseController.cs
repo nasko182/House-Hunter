@@ -41,16 +41,27 @@ public class HouseController : BaseController
         string userId = this.User.GetId()!;
         try
         {
-            IEnumerable<HouseAllViewModel> houses;
-            if (await this._agentService.AgentExistByUserIdAsync(userId))
+            List<HouseAllViewModel> houses = new List<HouseAllViewModel>();
+            if (this.User.IsAdmin())
             {
                 string? agentId = await this._agentService.GetAgentIdByUserIdAsync(userId);
 
-                houses = await this._houseService.AllByAgentIdAsync(agentId!);
+                houses.AddRange(await this._houseService.AllByAgentIdAsync(agentId!));
+                houses.AddRange(await this._houseService.AllByUserIdAsync(userId));
+
+                houses = houses.DistinctBy(h => h.Id).ToList();
+            }
+            else if (await this._agentService.AgentExistByUserIdAsync(userId))
+            {
+                string? agentId = await this._agentService.GetAgentIdByUserIdAsync(userId);
+
+                houses.AddRange(await this._houseService.AllByAgentIdAsync(agentId!));
+
             }
             else
             {
-                houses = await this._houseService.AllByUserIdAsync(userId);
+                houses.AddRange(await this._houseService.AllByUserIdAsync(userId));
+
             }
 
             return this.View(houses);
@@ -271,7 +282,7 @@ public class HouseController : BaseController
 
         string userId = this.User.GetId()!;
         bool isAgent = await this._agentService.AgentExistByUserIdAsync(userId);
-        if (isAgent)
+        if (isAgent && !this.User.IsAdmin())
         {
             this.TempData[ErrorMessage] = "Agents cannot rent houses";
 
@@ -309,11 +320,11 @@ public class HouseController : BaseController
             return this.RedirectToAction("All", "House");
         }
 
-        string userId = this.User.GetId()!;
-        bool isAgent = await this._agentService.AgentExistByUserIdAsync(userId);
-        if (isAgent)
+        string? userId = this.User.GetId();
+        bool isAgent = await this._agentService.AgentExistByUserIdAsync(userId!);
+        if (isAgent && !this.User.IsAdmin())
         {
-            this.TempData[ErrorMessage] = "Agents cannot rent houses";
+            this.TempData[ErrorMessage] = "Agents cannot leave houses";
             return this.RedirectToAction("Index", "Home");
 
         }
@@ -325,8 +336,8 @@ public class HouseController : BaseController
             return this.RedirectToAction("Mine", "House");
         }
 
-        bool isRentedByUser = await this._houseService.IsRentedByUserAsync(id, userId);
-        if (!isRentedByUser)
+        bool isRentedByUser = await this._houseService.IsRentedByUserAsync(id, userId!);
+        if (!isRentedByUser && !this.User.IsAdmin())
         {
             this.TempData[ErrorMessage] = "Selected house is not rented by you. Please select one of your houses";
             return this.RedirectToAction("Mine", "House");
@@ -334,7 +345,12 @@ public class HouseController : BaseController
 
         try
         {
-            await this._houseService.LeaveAsync(id, userId);
+            if (this.User.IsAdmin())
+            {
+                userId = await this._houseService.GetUserIdByHouseId(id);
+            }
+
+            await this._houseService.LeaveAsync(id, userId!);
 
             return this.RedirectToAction("Mine", "House");
         }
@@ -367,7 +383,7 @@ public class HouseController : BaseController
 
         bool isOwner = await this._houseService.IsAgentWithIdOwnerOfHouseWithIdAsync(id, agentId!);
 
-        if (!isOwner)
+        if (!isOwner && !this.User.IsAdmin())
         {
             this.TempData[ErrorMessage] = "You must be the agent owner of the house!";
 

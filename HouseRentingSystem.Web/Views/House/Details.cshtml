@@ -12,6 +12,8 @@
     bool isUserAgent = await AgentService.AgentExistByUserIdAsync(userId);
     bool isAgentOwnerOfTheHouse = await AgentService.HasHouseWithIdAsync(userId, Model.Id);
     bool isUserOwnerOfTheHouse = await HouseService.IsRentedByUserAsync(Model.Id, userId);
+    bool isAdmin = User.IsAdmin();
+
     ViewBag.Title = "House Details";
 }
 
@@ -37,7 +39,7 @@
 
                 @if (this.User.Identity?.IsAuthenticated ?? false)
                 {
-                    @if (isAgentOwnerOfTheHouse)
+                    @if (isAgentOwnerOfTheHouse || isAdmin)
                     {
                         <a class="btn btn-warning"
                            asp-controller="House"
@@ -50,7 +52,7 @@
                            asp-route-id="@Model.Id">Delete</a>
                     }
 
-                    @if (!isUserAgent)
+                    @if (!isUserAgent || isAdmin)
                     {
                         @if (!Model.IsRented)
                         {
@@ -64,7 +66,7 @@
                         }
                         else
                         {
-                            if (isUserOwnerOfTheHouse)
+                            if (isUserOwnerOfTheHouse || isAdmin)
                             {
                                 <form class="ml-2"
                                       asp-controller="House"

@@ -10,10 +10,10 @@ public class AgentEntityConfiguration : IEntityTypeConfiguration<Agent>
 {
     public void Configure(EntityTypeBuilder<Agent> builder)
     {
-        builder.HasData(this.GenerateAgents());
+        builder.HasData(GenerateAgents());
     }
 
-    private Agent[] GenerateAgents()
+    private static Agent[] GenerateAgents()
     {
         ICollection<Agent> agents = new HashSet<Agent>();
         Agent agent;

@@ -39,5 +39,7 @@ public interface IHouseService
 
     Task LeaveAsync(string houseId, string userId);
 
+    Task<string?> GetUserIdByHouseId(string houseId);
+
     Task<StatisticsServiceModel> GetStatisticsAsync();
 }

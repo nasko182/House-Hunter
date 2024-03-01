@@ -91,6 +91,7 @@ public class HouseService : IHouseService
         };
 
         IEnumerable<HouseAllViewModel> houses = await housesQuery
+            .Include(h => h.Renter)
             .Where(h => h.IsActive)
             .Skip((model.CurrentPage - 1) * model.HousesPerPage)
             .Take(model.HousesPerPage)
@@ -101,7 +102,8 @@ public class HouseService : IHouseService
                 Address = h.Address,
                 ImageUrl = h.ImageUrl,
                 PricePerMonth = h.PricePerMonth,
-                IsRented = h.RenterId != null
+                IsRented = h.RenterId != null,
+                RenterEmail = h.Renter.Email
             })
             .ToArrayAsync();
 
@@ -288,6 +290,15 @@ public class HouseService : IHouseService
         house.RenterId = null;
 
         await this._dbContext.SaveChangesAsync();
+    }
+
+    public async Task<string?> GetUserIdByHouseId(string houseId)
+    {
+        return await this._dbContext.Houses
+            .Where(h => h.IsActive &&
+                      h.Id.ToString() == houseId)
+            .Select(h => h.RenterId.ToString())
+            .FirstAsync();
     }
 
     public async Task<StatisticsServiceModel> GetStatisticsAsync()
