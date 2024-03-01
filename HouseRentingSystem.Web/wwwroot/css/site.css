@@ -1,18 +1,52 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+}
+
+#options p.divider-text {
+    line-height: 0.5;
+    margin-top: 15px;
+    text-align: center;
+}
+
+#options .divider-text span {
+    display: inline-block;
+    position: relative;
+    width: 15px;
+}
+
+
+#options p.divider-text span:before {
+    border-top: 0.5px solid #555555;
+    content: "";
+    position: absolute;
+    height: 5px;
+    top: 50%;
+    width: 185px;
+    right: 100%;
+    margin-right: 15px;
+}
+
+#options .divider-text span:after {
+    border-top: 0.5px solid #555555;
+    content: "";
+    position: absolute;
+    height: 5px;
+    top: 50%;
+    width: 185px;
+    margin-left: 15px;
 }
