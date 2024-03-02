@@ -35,18 +35,26 @@
             <p>@Model.Description</p>
             <p>Category: <b>@Model.Category</b></p>
             <p><i>(@(Model.IsRented ? "Rented" : "Not Rented"))</i></p>
+            @if (Model.IsRented && isAdmin)
+            {
+                <h6>@Model.RenterEmail</h6>
+            }
+            else
+            {
+                <br />
+            }
             <div class="form-inline">
 
                 @if (this.User.Identity?.IsAuthenticated ?? false)
                 {
                     @if (isAgentOwnerOfTheHouse || isAdmin)
                     {
-                        <a class="btn btn-warning"
+                        <a class="btn btn-warning mb-2"
                            asp-controller="House"
                            asp-action="Edit"
                            asp-route-id="@Model.Id">Edit</a>
 
-                        <a class="ml-2 btn btn-danger"
+                        <a class="ml-2 btn btn-danger mb-2"
                            asp-controller="House"
                            asp-action="Delete"
                            asp-route-id="@Model.Id">Delete</a>

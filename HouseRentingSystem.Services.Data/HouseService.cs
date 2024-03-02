@@ -103,7 +103,7 @@ public class HouseService : IHouseService
                 ImageUrl = h.ImageUrl,
                 PricePerMonth = h.PricePerMonth,
                 IsRented = h.RenterId != null,
-                RenterEmail = h.Renter.Email
+                RenterEmail = h.Renter!.Email
             })
             .ToArrayAsync();
 
@@ -157,6 +157,7 @@ public class HouseService : IHouseService
     public async Task<HouseDetailsViewModel> GetDetailsByHouseIdAsync(string houseId)
     {
         return await this._dbContext.Houses
+            .Include(h => h.Renter)
             .Include(h => h.Category)
             .Include(h => h.Agent)
             .ThenInclude(a => a.User)
@@ -172,6 +173,7 @@ public class HouseService : IHouseService
                 IsRented = h.RenterId.HasValue,
                 Description = h.Description,
                 Category = h.Category.Name,
+                RenterEmail = h.Renter!.Email,
                 Agent = new AgentInfoOnHouseViewModel
                 {
                     FullName = $"{h.Agent.User.FirstName} {h.Agent.User.LastName}",
