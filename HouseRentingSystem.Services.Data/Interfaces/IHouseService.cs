@@ -42,4 +42,6 @@ public interface IHouseService
     Task<string?> GetUserIdByHouseId(string houseId);
 
     Task<StatisticsServiceModel> GetStatisticsAsync();
+
+    Task<IEnumerable<RentsViewModel>> AllAsync();
 }

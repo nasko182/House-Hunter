@@ -1,6 +1,7 @@
 ﻿namespace HouseRentingSystem.Services.Data.Interfaces;
 
 using Web.ViewModels.Agent;
+using Web.ViewModels.User;
 
 public interface IAgentService
 {
@@ -10,4 +11,6 @@ public interface IAgentService
     Task CreateAsync(string userId, BecomeAgentFormModel model);
     Task<string?> GetAgentIdByUserIdAsync(string userId);
     Task<bool> HasHouseWithIdAsync(string userId, string houseId);
+    Task<string> GetFullNameByIdAsync(string userId);
+    Task<IEnumerable<UserViewModel>> AllAsync();
 }

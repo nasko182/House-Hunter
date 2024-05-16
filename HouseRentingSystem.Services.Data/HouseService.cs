@@ -314,6 +314,25 @@ public class HouseService : IHouseService
         };
     }
 
+    public async Task<IEnumerable<RentsViewModel>> AllAsync()
+    {
+        return await this._dbContext
+            .Houses
+            .Include(h => h.Agent.User)
+            .Include(h => h.Renter)
+            .Where(h => h.RenterId != null)
+            .Select(h => new RentsViewModel
+            {
+                HouseTitle = h.Title,
+                HouseImageURL = h.ImageUrl,
+                AgentFullName = h.Agent.User.FirstName + " " + h.Agent.User.LastName,
+                AgentEmail = h.Agent.User.Email,
+                RenterFullName = h.Renter!.FirstName + " " + h.Renter!.LastName,
+                RenterEmail = h.Renter.Email
+            })
+            .ToListAsync();
+    }
+
     public async Task<bool> IsAgentWithIdOwnerOfHouseWithIdAsync(string houseId, string agentId)
     {
         House house = await this._dbContext.Houses

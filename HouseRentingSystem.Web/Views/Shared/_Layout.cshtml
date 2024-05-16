@@ -27,7 +27,7 @@
         <div class="container-fluid">
             <a class="navbar-brand" asp-area="" 
                asp-controller="Home" 
-               asp-action="Index">House Renting Worldwide</a>
+               asp-action="Index">House Hunter</a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
@@ -41,12 +41,24 @@
                     </li>
                     @if (User.Identity?.IsAuthenticated ?? false)
                     {
-                        <li class="nav-item">
+                        if (this.User.IsInRole(AdminRoleName))
+                        {
+                            <li class="nav-item">
                             <a class="nav-link text-dark" 
-                               asp-area="" 
+                               asp-area="Admin" 
                                asp-controller="House" 
                                asp-action="Mine">My Houses</a>
-                        </li>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" 
+                                   asp-area="" 
+                                   asp-controller="House" 
+                                   asp-action="Mine">My Houses</a>
+                            </li>
+                        }
 
                         if (isUserAgent)
                         {
@@ -72,7 +84,7 @@
 
 <footer class="border-top footer text-muted">
     <div class="container">
-        &copy; House Renting Worldwide @ReleaseYear
+        &copy; House Hunter @ReleaseYear
         @if (ReleaseYear != DateTime.UtcNow.Year)
         {
             @Html.Raw($" - {DateTime.UtcNow.Year}");
